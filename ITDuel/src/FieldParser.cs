@@ -49,10 +49,15 @@ namespace Nancy.FourColors
                         region = new Region()
                         {
                             RegionID = regionId,
-                            Neighbours = new List<Region>()
+                            Neighbours = new List<Region>(),
+                            Size = 1
                         };
 
                         result.Add(region);
+                    }
+                    else
+                    {
+                        region.Size++;
                     }
 
                     ProcessCell(field, i - 1, j, region, result);
