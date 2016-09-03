@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using Nancy.Extensions;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Nancy.FourColors
 {
@@ -19,8 +20,9 @@ namespace Nancy.FourColors
 
                 Console.WriteLine ("JSON: " + json1);
 
-                var array = Helper.GetArrayFromJson(json1);
-                var regions = FieldParser.Parse(array);
+                var game = Helper.CreateGameFromJson(json1);
+//                var array = Helper.GetArrayFromJson(json1);
+//                var regions = FieldParser.Parse(array);
 				var json = "{\"status\": \"ok\"}";
 
 				var json_response = (Response)json;
@@ -38,8 +40,16 @@ namespace Nancy.FourColors
 					Console.WriteLine("arg = {0}, value = {1}", arg.Key, arg.Value);
 				};
 
+//                var gameId = this.Request.Query.ToDictionary()["ID"];
+
+                Game game = Helper.Games.First(x => x.GameId == args.id);
+                var move = game.regions.FirstOrDefault(x => x.Color == null);
+                if (move != null)
+                {
+                    move.Color = 0;
+                }
                 var rnd = new Random();
-				var json = "{\"status\": \"ok\",\"figure\": " + rnd.Next(0, Helper.MaxId) + "}";
+				var json = "{\"status\": \"ok\",\"figure\": " + move.RegionID + "}";
                 Console.WriteLine(json);
 
 				var json_response = (Response)json;
@@ -66,9 +76,11 @@ namespace Nancy.FourColors
 				Console.WriteLine ("[DELETE] /games/{id}");
 				Console.WriteLine ("ID = " + args.id);
 
-                Helper.MaxId = 0;
+//                var gameId = this.Request.Query.ToDictionary()["ID"];
+                var gameToRemove = Helper.Games.First(x => x.GameId == args.id);
+                Helper.Games.Remove(gameToRemove);
 
-				var json = "{\"status\": \"ok\"}";
+                var json = "{\"status\": \"ok\"}";
 
 				var json_response = (Response)json;
 				json_response.ContentType = "application/json";

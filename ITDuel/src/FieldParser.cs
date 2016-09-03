@@ -68,7 +68,14 @@ namespace Nancy.FourColors
                     ProcessCell(field, i + 1, j + 1, region, result);
                 }
             }
+
+            result = result.OrderByDescending(x => x.Size).ToList();
             return result;
+        }
+
+        public static void UpdateRegion(IList<Region> regions, int regionId, int colorId)
+        {
+            regions.First(x => x.RegionID == regionId).Color = colorId;
         }
     }
 }

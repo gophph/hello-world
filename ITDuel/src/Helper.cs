@@ -7,12 +7,23 @@ using System.Threading.Tasks;
 
 namespace Nancy.FourColors
 {
-    class Helper
+    static class Helper
     {
-        public static int MaxId;
-        public static int[,] GetArrayFromJson(string json)
+        public static IList<Game> Games;
+        
+        public static Game CreateGameFromJson(string json)
         {
+            if (Games == null)
+                Games = new List<Game>();
+
+            Game game = new Game();
+
+            
+
             JObject jfull = JObject.Parse(json);
+
+            game.GameId = jfull["id"].Value<string>();
+
             JObject j = (JObject)jfull["board"];
 
             int height = (int)j["height"];
@@ -31,14 +42,22 @@ namespace Nancy.FourColors
                 foreach (int n in arr2)
                 {
                     array[i, k] = n;
-                    if (n > MaxId)
-                        MaxId = n;
+                    if (n > game.MaxId)
+                        game.MaxId = n;
                     k++;
                 }
                 i++;
             }
 
-            return array;
+
+            game.regions = FieldParser.Parse(array);
+
+
+            game.array = array;
+
+            Games.Add(game);
+
+            return game;
         }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="App.cs" />
     <Compile Include="api\MainModule.cs" />
     <Compile Include="FieldParser.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Region.cs" />
   </ItemGroup>
