@@ -8,12 +8,24 @@ namespace Nancy.FourColors
 {
     public static class FieldParser
     {
-        private static void ProcessCell(int[,] field, int row, int col, IList<Region> result)
+        private static void ProcessCell(int[,] field, int row, int col, Region region, IList<Region> result)
         {
             if
                 ((row < 0) || (row >= field.GetLength(0))
                 || ((col < 0) || (col >= field.GetLength(1))))
                 return;
+
+            var neighbourId = field[row, col];
+            if (region.RegionID == neighbourId)
+                return;
+
+            var neighbour = result.FirstOrDefault(x => x.RegionID == neighbourId);
+
+            if ((region.Neighbours.IndexOf(neighbour) != -1))
+            {
+                region.Neighbours.Add(neighbour);
+            }
+            
         }
 
         public static IList<Region> Parse(int[,] field)
@@ -24,7 +36,26 @@ namespace Nancy.FourColors
             {
                 for (int j = 0; j < field.GetLength(1); j++)
                 {
-//                    ProcessCell(field, i - 1, )
+                    var regionId = field[i, j];
+
+                    var region = result.FirstOrDefault(x => x.RegionID == regionId);
+                    if (region == null)
+                    {
+                        region = new Region()
+                        {
+                            RegionID = regionId,
+                            Neighbours = new List<Region>()
+                        };
+
+                        result.Add(region);
+                    }
+
+                    ProcessCell(field, i - 1, j, region, result);
+                    ProcessCell(field, i - 1, j + 1, region, result);
+                    ProcessCell(field, i, j - 1, region, result);
+                    ProcessCell(field, i, j + 1, region, result);
+                    ProcessCell(field, i + 1, j, region, result);
+                    ProcessCell(field, i + 1, j + 1, region, result);
                 }
             }
             return result;

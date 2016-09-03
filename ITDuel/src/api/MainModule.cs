@@ -15,8 +15,12 @@ namespace Nancy.FourColors
 			Post ["/games"] = args => {
 				Console.WriteLine ("[POST] /games");
 
-				Console.WriteLine ("JSON: " + this.Request.Body.AsString());
+                var json1 = this.Request.Body.AsString();
 
+                Console.WriteLine ("JSON: " + json1);
+
+                var array = Helper.GetArrayFromJson(json1);
+                var regions = FieldParser.Parse(array);
 				var json = "{\"status\": \"ok\"}";
 
 				var json_response = (Response)json;
@@ -34,7 +38,9 @@ namespace Nancy.FourColors
 					Console.WriteLine("arg = {0}, value = {1}", arg.Key, arg.Value);
 				};
 
-				var json = "{\"status\": \"ok\",\"figure\": 0}";
+                var rnd = new Random();
+				var json = "{\"status\": \"ok\",\"figure\": " + rnd.Next(0, Helper.MaxId) + "}";
+                Console.WriteLine(json);
 
 				var json_response = (Response)json;
 				json_response.ContentType = "application/json";
@@ -59,6 +65,8 @@ namespace Nancy.FourColors
 			Delete ["/games/{id}"] = args => {
 				Console.WriteLine ("[DELETE] /games/{id}");
 				Console.WriteLine ("ID = " + args.id);
+
+                Helper.MaxId = 0;
 
 				var json = "{\"status\": \"ok\"}";
 
