@@ -11,5 +11,6 @@ namespace Nancy.FourColors
         public IList<Region> Neighbours { get; set; }
         public int RegionID { get; set; }
         public int? Color { get; set; }
+        public int Size { get; set; }
     }
 }

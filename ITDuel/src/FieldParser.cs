@@ -21,9 +21,14 @@ namespace Nancy.FourColors
 
             var neighbour = result.FirstOrDefault(x => x.RegionID == neighbourId);
 
-            if ((region.Neighbours.IndexOf(neighbour) != -1))
+            if ((neighbour != null) && (region.Neighbours.IndexOf(neighbour) == -1))
             {
                 region.Neighbours.Add(neighbour);
+                
+                if (neighbour.Neighbours.IndexOf(region) == -1)
+                {
+                    neighbour.Neighbours.Add(region);
+                }
             }
             
         }
